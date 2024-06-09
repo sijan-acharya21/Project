@@ -12,10 +12,16 @@ netPay = grossPay - tax;
 // Calculate tax
 // Need to select a, b and x from the tax file sheet
 // Need to check if the employee has claimed tax free threshold or not from tax file sheet
-double a;
-double b;
+double coefficientA;
+double coefficientB;
 double x;
 double tax = ax - b;
+
+if (TaxThresholds.ToUpper == 'Y') {
+  PayCalculatorWithThreshold();
+} else {
+  PayCalculatorNoThreshold();
+}
 
 // Calculate superannuation
 double superAnnuation;
