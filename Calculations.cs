@@ -25,6 +25,6 @@ if (TaxThresholds.ToUpper == 'Y') {
 
 // Calculate superannuation
 double superAnnuation;
-double superRate = 11;
+double superRate = 0.11;
 double grossPay;
 superAnnuation = superRate * grossPay;
