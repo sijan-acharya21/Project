@@ -128,6 +128,8 @@ namespace OO_programming
                         $"Tax: {tax}" + Environment.NewLine +
                         $"Net pay: {netPay}" + Environment.NewLine +
                         $"Superannuation: {superannuation}" + Environment.NewLine;
+
+                    
                 }
                 else
                 {
