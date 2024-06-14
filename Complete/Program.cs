@@ -46,11 +46,11 @@ namespace OO_programming
     /// </summary>
     public class TaxBracket
     {
-        public double LowerLimit { get; set; }
-        public double UpperLimit { get; set; }
-        public double TaxRateA { get; set; }
-        public double TaxRateB { get; set; }
-
+        public double lowerLimit { get; set; }
+        public double upperLimit { get; set; }
+        public double taxRateA { get; set; }
+        public double taxRateB { get; set; }
+    }
         public class PayCalculator
         {
             public List<TaxBracket> TaxBrackets { get; set; }
@@ -64,7 +64,7 @@ namespace OO_programming
             }
             public double CalculateGrossPay(double hoursWorked, double hourlyRate)
             {
-                double grossPay = hoursWorked * hourlyRate + 0.99;
+                double grossPay = hoursWorked * hourlyRate;
                 return grossPay;
             }
 
@@ -78,13 +78,13 @@ namespace OO_programming
             {
                 foreach (var bracket in TaxBrackets)
                 {
-                    if (grossPay > bracket.LowerLimit && grossPay <= bracket.UpperLimit)
+                    if (grossPay > bracket.lowerLimit && grossPay <= bracket.upperLimit)
                     {
                         // Tax formula: y = ax - b
-                        return (bracket.TaxRateA * grossPay) - bracket.TaxRateB;
+                        return (bracket.taxRateA * grossPay) - bracket.taxRateB + 0.99;
                     }
                 }
-                return 0; 
+                return 0;
             }
 
             public double CalculateNetPay(double grossPay, double tax)
@@ -99,18 +99,37 @@ namespace OO_programming
         /// </summary>
         public class PayCalculatorNoThreshold : PayCalculator
         {
-            string taxNoThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-nothreshold.csv";
-
+        public double CalculateTax(double grossPay)
+        {
+            foreach (var bracket in TaxBrackets)
+            {
+                if (grossPay > bracket.lowerLimit && grossPay <= bracket.upperLimit)
+                {
+                    // Tax formula: y = ax - b
+                    return (bracket.taxRateA * grossPay) - bracket.taxRateB + 0.99;
+                }
+            }
+            return 0;
         }
+
+    }
 
         /// <summary>
         /// Extends PayCalculator class handling With tax threshold
         /// </summary>
         public class PayCalculatorWithThreshold : PayCalculator
         {
-
-
-
+        public double CalculateTax(double grossPay)
+        {
+            foreach (var bracket in TaxBrackets)
+            {
+                if (grossPay > bracket.lowerLimit && grossPay <= bracket.upperLimit)
+                {
+                    // Tax formula: y = ax - b
+                    return (bracket.taxRateA * grossPay) - bracket.taxRateB + 0.99;
+                }
+            }
+            return 0;
         }
     }
 }
