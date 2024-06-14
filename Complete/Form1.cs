@@ -66,7 +66,7 @@ namespace OO_programming
         {
             string employeeFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\employee.csv";
             string taxWithThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
-            string taxNoThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
+            string taxNoThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-nothreshold.csv";
 
             List<int> idList = new List<int>();
             List<string> firstNameList = new List<string>();
@@ -85,9 +85,8 @@ namespace OO_programming
             {
                 var records = csv.GetRecords<PaySlip>().ToList();
 
-                for (int i = 0; i < records.Count; i++)
+                foreach (var record in records)
                 {
-                    var record = records[i];
                     idList.Add(record.id);
                     firstNameList.Add(record.firstName);
                     lastNameList.Add(record.lastName);
@@ -98,48 +97,33 @@ namespace OO_programming
 
             if (listBox1.SelectedItem != null)
             {
-               
+                int selectedIndex = listBox1.SelectedIndex;
+                char taxThreshold = taxThresholdList[selectedIndex];
+
+                // Determine which tax rate file to use
+                string taxFile = taxThreshold == 'Y' ? taxWithThresholdFile : taxNoThresholdFile;
+                var taxBrackets = ReadTaxBrackets(taxFile);
+
                 if (double.TryParse(textBox1.Text, out double hoursWorked))
                 {
-
-                    int selectedIndex = listBox1.SelectedIndex;
-                    int employeeId = idList[selectedIndex];
-                    string firstname = firstNameList[selectedIndex];
-                    string lastName = lastNameList[selectedIndex];
-                    double hourlyRate = hourlyRateList[selectedIndex];
-                    char taxThreshold = taxThresholdList[selectedIndex];
-
-                    var taxBrackets = ReadTaxBrackets(taxWithThresholdFile);
-
-                    if (taxThreshold == 'Y')
-                    {
-                        taxBrackets = ReadTaxBrackets(taxWithThresholdFile);
-                    }
-                    else if (taxThreshold == 'N')
-                    {
-                        taxBrackets = ReadTaxBrackets(taxNoThresholdFile);
-                    }
-
                     PayCalculator employee = new PayCalculator
                     {
                         TaxBrackets = taxBrackets
                     };
 
-                    
-
-                    double grossPay = employee.CalculateGrossPay(hoursWorked, hourlyRate);
+                    double grossPay = employee.CalculateGrossPay(hoursWorked, hourlyRateList[selectedIndex]);
                     double superannuation = employee.CalculateSuperannuation(grossPay);
                     double tax = employee.CalculateTax(grossPay);
                     double netPay = employee.CalculateNetPay(grossPay, tax);
 
                     textBox2.TextAlign = HorizontalAlignment.Left;
                     textBox2.Text =
-                        $"Employee Id: {employeeId}" + Environment.NewLine +
-                        $"First name: {firstname}" + Environment.NewLine +
-                        $"Last name: {lastName}" + Environment.NewLine +
-                        $"Hours worked: {hoursWorked} " + Environment.NewLine +
-                        $"Hourly rate: {hourlyRate}" + Environment.NewLine +
-                        $"Tax threshold: {taxThreshold} " + Environment.NewLine +
+                        $"Employee Id: {idList[selectedIndex]}" + Environment.NewLine +
+                        $"First name: {firstNameList[selectedIndex]}" + Environment.NewLine +
+                        $"Last name: {lastNameList[selectedIndex]}" + Environment.NewLine +
+                        $"Hours worked: {hoursWorked}" + Environment.NewLine +
+                        $"Hourly rate: {hourlyRateList[selectedIndex]}" + Environment.NewLine +
+                        $"Tax threshold: {taxThreshold}" + Environment.NewLine +
                         $"Gross pay: {grossPay}" + Environment.NewLine +
                         $"Tax: {tax}" + Environment.NewLine +
                         $"Net pay: {netPay}" + Environment.NewLine +
@@ -152,15 +136,15 @@ namespace OO_programming
             }
         }
 
-        private List<TaxBracket> ReadTaxBrackets(string file)
+        private List<TaxBracket> ReadTaxBrackets(string filePath)
         {
             List<TaxBracket> taxBrackets = new List<TaxBracket>();
 
-            using (var reader = new StreamReader(file))
+            using (var reader = new StreamReader(filePath))
             using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HeaderValidated = null, // Disable header validation
-                HasHeaderRecord = false, // There is no header in the taxrate-withthreshold.csv file
+                HasHeaderRecord = false, // There is no header in the tax rate files
                 MissingFieldFound = null,
             }))
             {
@@ -177,7 +161,7 @@ namespace OO_programming
             {
                 string employeeFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\employee.csv";
                 string taxWithThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
-                string taxNoThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
+                string taxNoThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-nothreshold.csv";
 
                 List<int> idList = new List<int>();
                 List<string> firstNameList = new List<string>();
@@ -185,7 +169,7 @@ namespace OO_programming
                 List<double> hourlyRateList = new List<double>();
                 List<char> taxThresholdList = new List<char>();
 
-                // Read and parse the employee CSV file
+                // Read and parse the employee CSV file (similar code as button1_Click)
                 using (var reader = new StreamReader(employeeFile))
                 using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
                 {
@@ -196,9 +180,8 @@ namespace OO_programming
                 {
                     var records = csv.GetRecords<PaySlip>().ToList();
 
-                    for (int i = 0; i < records.Count; i++)
+                    foreach (var record in records)
                     {
-                        var record = records[i];
                         idList.Add(record.id);
                         firstNameList.Add(record.firstName);
                         lastNameList.Add(record.lastName);
@@ -207,47 +190,35 @@ namespace OO_programming
                     }
                 }
 
+                int selectedIndex = listBox1.SelectedIndex;
+                char taxThreshold = taxThresholdList[selectedIndex];
+
+                // Determine which tax rate file to use
+                string taxFile = taxThreshold == 'Y' ? taxWithThresholdFile : taxNoThresholdFile;
+                var taxBrackets = ReadTaxBrackets(taxFile);
+
                 if (double.TryParse(textBox1.Text, out double hoursWorked))
                 {
-                    
-
-                    int selectedIndex = listBox1.SelectedIndex;
-                    int employeeId = idList[selectedIndex];
-                    string firstName = firstNameList[selectedIndex];
-                    string lastName = lastNameList[selectedIndex];
-                    double hourlyRate = hourlyRateList[selectedIndex];
-                    char taxThreshold = taxThresholdList[selectedIndex];
-
-                    var taxBrackets = ReadTaxBrackets(taxWithThresholdFile);
-
-                    if (taxThreshold == 'Y')
-                    {
-                        taxBrackets = ReadTaxBrackets(taxWithThresholdFile);
-                    } else if (taxThreshold == 'N')
-                    {
-                        taxBrackets = ReadTaxBrackets(taxNoThresholdFile);
-                    }
-
                     var calculator = new PayCalculator
                     {
                         TaxBrackets = taxBrackets
                     };
 
-                    double grossPay = calculator.CalculateGrossPay(hoursWorked, hourlyRate);
+                    double grossPay = calculator.CalculateGrossPay(hoursWorked, hourlyRateList[selectedIndex]);
                     double superannuation = calculator.CalculateSuperannuation(grossPay);
                     double tax = calculator.CalculateTax(grossPay);
                     double netPay = calculator.CalculateNetPay(grossPay, tax);
 
-                    string fullName = $"{firstName} {lastName}";
+                    string fullName = $"{firstNameList[selectedIndex]} {lastNameList[selectedIndex]}";
                     string fileName = $"Pay_{fullName}_{DateTime.Now:yyyyMMddHHmmss}.csv";
                     string filePath = Path.Combine(@"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming", fileName);
 
                     var paySlipRecord = new
                     {
-                        EmployeeId = employeeId,
+                        EmployeeId = idList[selectedIndex],
                         FullName = fullName,
                         HoursWorked = hoursWorked,
-                        HourlyRate = hourlyRate,
+                        HourlyRate = hourlyRateList[selectedIndex],
                         TaxThreshold = taxThreshold,
                         GrossPay = grossPay,
                         Tax = tax,
