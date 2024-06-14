@@ -80,13 +80,18 @@ namespace OO_programming
                 {
                     if (grossPay > bracket.LowerLimit && grossPay <= bracket.UpperLimit)
                     {
-                        // Using the tax formula: Tax = a * grossPay + b
-                        return bracket.TaxRateA * grossPay + bracket.TaxRateB;
+                        // Tax formula: y = ax - b
+                        return (bracket.TaxRateA * grossPay) - bracket.TaxRateB;
                     }
                 }
-                return 0; // Default tax if no bracket is matched
+                return 0; 
             }
 
+            public double CalculateNetPay(double grossPay, double tax)
+            {
+                double netPay = grossPay - tax;
+                return netPay;
+            }
         }
 
         /// <summary>
