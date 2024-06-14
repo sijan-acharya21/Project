@@ -16,6 +16,7 @@ using CsvHelper.Configuration;
 using System.Runtime.CompilerServices;
 using System.Linq.Expressions;
 using static OO_programming.TaxBracket;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace OO_programming
 {
@@ -61,10 +62,11 @@ namespace OO_programming
             }
         }
 
-        private async void button1_Click(object sender, EventArgs e)
+        private void button1_Click(object sender, EventArgs e)
         {
             string employeeFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\employee.csv";
             string taxWithThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
+            string taxNoThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
 
             List<int> idList = new List<int>();
             List<string> firstNameList = new List<string>();
@@ -94,31 +96,41 @@ namespace OO_programming
                 }
             }
 
-            // Read the tax brackets from the CSV file
-            var taxBrackets = ReadTaxBrackets(taxWithThresholdFile);
-
             if (listBox1.SelectedItem != null)
             {
-                int selectedIndex = listBox1.SelectedIndex;
-                int employeeId = idList[selectedIndex];
-                string firstname = firstNameList[selectedIndex];
-                string lastName = lastNameList[selectedIndex];
-                double hourlyRate = hourlyRateList[selectedIndex];
-                char taxThreshold = taxThresholdList[selectedIndex];
-
+               
                 if (double.TryParse(textBox1.Text, out double hoursWorked))
                 {
+
+                    int selectedIndex = listBox1.SelectedIndex;
+                    int employeeId = idList[selectedIndex];
+                    string firstname = firstNameList[selectedIndex];
+                    string lastName = lastNameList[selectedIndex];
+                    double hourlyRate = hourlyRateList[selectedIndex];
+                    char taxThreshold = taxThresholdList[selectedIndex];
+
+                    var taxBrackets = ReadTaxBrackets(taxWithThresholdFile);
+
+                    if (taxThreshold == 'Y')
+                    {
+                        taxBrackets = ReadTaxBrackets(taxWithThresholdFile);
+                    }
+                    else if (taxThreshold == 'N')
+                    {
+                        taxBrackets = ReadTaxBrackets(taxNoThresholdFile);
+                    }
+
                     PayCalculator employee = new PayCalculator
                     {
                         TaxBrackets = taxBrackets
                     };
 
-
+                    
 
                     double grossPay = employee.CalculateGrossPay(hoursWorked, hourlyRate);
                     double superannuation = employee.CalculateSuperannuation(grossPay);
                     double tax = employee.CalculateTax(grossPay);
-                    //double netPay = employee.CalculateNetPay(grossPay, tax);
+                    double netPay = employee.CalculateNetPay(grossPay, tax);
 
                     textBox2.TextAlign = HorizontalAlignment.Left;
                     textBox2.Text =
@@ -130,7 +142,7 @@ namespace OO_programming
                         $"Tax threshold: {taxThreshold} " + Environment.NewLine +
                         $"Gross pay: {grossPay}" + Environment.NewLine +
                         $"Tax: {tax}" + Environment.NewLine +
-                        $"Net pay: " + Environment.NewLine +
+                        $"Net pay: {netPay}" + Environment.NewLine +
                         $"Superannuation: {superannuation}" + Environment.NewLine;
                 }
                 else
@@ -140,11 +152,11 @@ namespace OO_programming
             }
         }
 
-        private List<TaxBracket> ReadTaxBrackets(string taxWithThreshold)
+        private List<TaxBracket> ReadTaxBrackets(string file)
         {
             List<TaxBracket> taxBrackets = new List<TaxBracket>();
 
-            using (var reader = new StreamReader(taxWithThreshold))
+            using (var reader = new StreamReader(file))
             using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
             {
                 HeaderValidated = null, // Disable header validation
@@ -161,11 +173,114 @@ namespace OO_programming
 
         private void button2_Click(object sender, EventArgs e)
         {
-            // Add code below to complete the implementation for saving the
-            // calculated payment data into a csv file.
-            // File naming convention: Pay_<full name>_<datetimenow>.csv
-            // Data fields expected - EmployeeId, Full Name, Hours Worked, Hourly Rate, Tax Threshold, Gross Pay, Tax, Net Pay, Superannuation
+            if (listBox1.SelectedItem != null)
+            {
+                string employeeFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\employee.csv";
+                string taxWithThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
+                string taxNoThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
+
+                List<int> idList = new List<int>();
+                List<string> firstNameList = new List<string>();
+                List<string> lastNameList = new List<string>();
+                List<double> hourlyRateList = new List<double>();
+                List<char> taxThresholdList = new List<char>();
+
+                // Read and parse the employee CSV file
+                using (var reader = new StreamReader(employeeFile))
+                using (var csv = new CsvReader(reader, new CsvConfiguration(CultureInfo.InvariantCulture)
+                {
+                    HeaderValidated = null, // Disable header validation
+                    HasHeaderRecord = false, // There is no header in the employee.csv file
+                    MissingFieldFound = null,
+                }))
+                {
+                    var records = csv.GetRecords<PaySlip>().ToList();
+
+                    for (int i = 0; i < records.Count; i++)
+                    {
+                        var record = records[i];
+                        idList.Add(record.id);
+                        firstNameList.Add(record.firstName);
+                        lastNameList.Add(record.lastName);
+                        hourlyRateList.Add(record.hourlyRate);
+                        taxThresholdList.Add(record.taxThreshold);
+                    }
+                }
+
+                if (double.TryParse(textBox1.Text, out double hoursWorked))
+                {
+                    
+
+                    int selectedIndex = listBox1.SelectedIndex;
+                    int employeeId = idList[selectedIndex];
+                    string firstName = firstNameList[selectedIndex];
+                    string lastName = lastNameList[selectedIndex];
+                    double hourlyRate = hourlyRateList[selectedIndex];
+                    char taxThreshold = taxThresholdList[selectedIndex];
+
+                    var taxBrackets = ReadTaxBrackets(taxWithThresholdFile);
+
+                    if (taxThreshold == 'Y')
+                    {
+                        taxBrackets = ReadTaxBrackets(taxWithThresholdFile);
+                    } else if (taxThreshold == 'N')
+                    {
+                        taxBrackets = ReadTaxBrackets(taxNoThresholdFile);
+                    }
+
+                    var calculator = new PayCalculator
+                    {
+                        TaxBrackets = taxBrackets
+                    };
+
+                    double grossPay = calculator.CalculateGrossPay(hoursWorked, hourlyRate);
+                    double superannuation = calculator.CalculateSuperannuation(grossPay);
+                    double tax = calculator.CalculateTax(grossPay);
+                    double netPay = calculator.CalculateNetPay(grossPay, tax);
+
+                    string fullName = $"{firstName} {lastName}";
+                    string fileName = $"Pay_{fullName}_{DateTime.Now:yyyyMMddHHmmss}.csv";
+                    string filePath = Path.Combine(@"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming", fileName);
+
+                    var paySlipRecord = new
+                    {
+                        EmployeeId = employeeId,
+                        FullName = fullName,
+                        HoursWorked = hoursWorked,
+                        HourlyRate = hourlyRate,
+                        TaxThreshold = taxThreshold,
+                        GrossPay = grossPay,
+                        Tax = tax,
+                        NetPay = netPay,
+                        Superannuation = superannuation
+                    };
+
+                    try
+                    {
+                        using (var writer = new StreamWriter(filePath))
+                        using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                        {
+                            csv.WriteRecords(new[] { paySlipRecord });
+                        }
+
+                        MessageBox.Show($"Pay slip saved to {filePath}", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show($"Error saving file: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Please enter a valid number for hours worked.", "Invalid Input", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Please select an employee from the list.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
+
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -177,6 +292,11 @@ namespace OO_programming
 
         private void textBox1_TextChanged_1(object sender, EventArgs e)
         {
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
