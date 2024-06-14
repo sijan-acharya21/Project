@@ -55,7 +55,6 @@ namespace OO_programming
         {
             public List<TaxBracket> TaxBrackets { get; set; }
 
-
             public double superRate = 0.11;
 
             public PayCalculator()
@@ -86,51 +85,10 @@ namespace OO_programming
                 }
                 return 0;
             }
-
             public double CalculateNetPay(double grossPay, double tax)
             {
                 double netPay = grossPay - tax;
                 return netPay;
             }
         }
-
-        /// <summary>
-        /// Extends PayCalculator class handling No tax threshold
-        /// </summary>
-        public class PayCalculatorNoThreshold : PayCalculator
-        {
-        public double CalculateTax(double grossPay)
-        {
-            foreach (var bracket in TaxBrackets)
-            {
-                if (grossPay > bracket.lowerLimit && grossPay <= bracket.upperLimit)
-                {
-                    // Tax formula: y = ax - b
-                    return (bracket.taxRateA * grossPay) - bracket.taxRateB + 0.99;
-                }
-            }
-            return 0;
-        }
-
-    }
-
-        /// <summary>
-        /// Extends PayCalculator class handling With tax threshold
-        /// </summary>
-        public class PayCalculatorWithThreshold : PayCalculator
-        {
-        public double CalculateTax(double grossPay)
-        {
-            foreach (var bracket in TaxBrackets)
-            {
-                if (grossPay > bracket.lowerLimit && grossPay <= bracket.upperLimit)
-                {
-                    // Tax formula: y = ax - b
-                    return (bracket.taxRateA * grossPay) - bracket.taxRateB + 0.99;
-                }
-            }
-            return 0;
-        }
-    }
 }
-
