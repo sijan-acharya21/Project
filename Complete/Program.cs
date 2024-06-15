@@ -51,44 +51,44 @@ namespace OO_programming
         public double taxRateA { get; set; }
         public double taxRateB { get; set; }
     }
-        public class PayCalculator
+    public class PayCalculator
+    {
+        public List<TaxBracket> TaxBrackets { get; set; }
+
+        public double superRate = 0.11;
+
+        public PayCalculator()
         {
-            public List<TaxBracket> TaxBrackets { get; set; }
-
-            public double superRate = 0.11;
-
-            public PayCalculator()
-            {
-                TaxBrackets = new List<TaxBracket>();
-            }
-            public double CalculateGrossPay(double hoursWorked, double hourlyRate)
-            {
-                double grossPay = hoursWorked * hourlyRate;
-                return grossPay;
-            }
-
-            public double CalculateSuperannuation(double grossPay)
-            {
-                double superannuation = superRate * grossPay;
-                return superannuation;
-            }
-
-            public double CalculateTax(double grossPay)
-            {
-                foreach (var bracket in TaxBrackets)
-                {
-                    if (grossPay > bracket.lowerLimit && grossPay <= bracket.upperLimit)
-                    {
-                        // Tax formula: y = ax - b
-                        return (bracket.taxRateA * grossPay) - bracket.taxRateB + 0.99;
-                    }
-                }
-                return 0;
-            }
-            public double CalculateNetPay(double grossPay, double tax)
-            {
-                double netPay = grossPay - tax;
-                return netPay;
-            }
+            TaxBrackets = new List<TaxBracket>();
         }
+        public double CalculateGrossPay(double hoursWorked, double hourlyRate)
+        {
+            double grossPay = hoursWorked * hourlyRate;
+            return grossPay;
+        }
+
+        public double CalculateSuperannuation(double grossPay)
+        {
+            double superannuation = superRate * grossPay;
+            return superannuation;
+        }
+
+        public double CalculateTax(double grossPay)
+        {
+            foreach (var bracket in TaxBrackets)
+            {
+                if (grossPay > bracket.lowerLimit && grossPay <= bracket.upperLimit)
+                {
+                    // Tax formula: y = ax - b
+                    return (bracket.taxRateA * grossPay) - bracket.taxRateB + 0.99;
+                }
+            }
+            return 0;
+        }
+        public double CalculateNetPay(double grossPay, double tax)
+        {
+            double netPay = grossPay - tax;
+            return netPay;
+        }
+    }
 }
