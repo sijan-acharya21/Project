@@ -29,7 +29,7 @@ namespace OO_programming
             // Add code below to complete the implementation to populate the listBox
             // by reading the employee.csv file into a List of PaySlip objects, then binding this to the ListBox.
             // CSV file format: <employee ID>, <first name>, <last name>, <hourly rate>,<taxthreshold>
-            string employeeFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\employee.csv";
+            string employeeFile = @"\\Mac\Home\Desktop\Project\Part 3\Cl_OOProgramming_AE_Pro_Appx\Part 3 application files\OO programming\employee.csv";
 
             List<int> idList = new List<int>();
             List<string> firstNameList = new List<string>();
@@ -64,9 +64,9 @@ namespace OO_programming
 
         private void button1_Click(object sender, EventArgs e)
         {
-            string employeeFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\employee.csv";
-            string taxWithThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
-            string taxNoThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-nothreshold.csv";
+            string employeeFile = @"\\Mac\Home\Desktop\Project\Part 3\Cl_OOProgramming_AE_Pro_Appx\Part 3 application files\OO programming\employee.csv";
+            string taxWithThresholdFile = @"\\Mac\Home\Desktop\Project\Part 3\Cl_OOProgramming_AE_Pro_Appx\Part 3 application files\OO programming\taxrate-withthreshold.csv";
+            string taxNoThresholdFile = @"\\Mac\Home\Desktop\Project\Part 3\Cl_OOProgramming_AE_Pro_Appx\Part 3 application files\OO programming\taxrate-nothreshold.csv";
 
             List<int> idList = new List<int>();
             List<string> firstNameList = new List<string>();
@@ -161,9 +161,9 @@ namespace OO_programming
         {
             if (listBox1.SelectedItem != null)
             {
-                string employeeFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\employee.csv";
-                string taxWithThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-withthreshold.csv";
-                string taxNoThresholdFile = @"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming\taxrate-nothreshold.csv";
+                string employeeFile = @"\\Mac\Home\Desktop\Project\Part 3\Cl_OOProgramming_AE_Pro_Appx\Part 3 application files\OO programming\employee.csv";
+                string taxWithThresholdFile = @"\\Mac\Home\Desktop\Project\Part 3\Cl_OOProgramming_AE_Pro_Appx\Part 3 application files\OO programming\taxrate-withthreshold.csv";
+                string taxNoThresholdFile = @"\\Mac\Home\Desktop\Project\Part 3\Cl_OOProgramming_AE_Pro_Appx\Part 3 application files\OO programming\taxrate-nothreshold.csv";
 
                 List<int> idList = new List<int>();
                 List<string> firstNameList = new List<string>();
@@ -213,7 +213,7 @@ namespace OO_programming
 
                     string fullName = $"{firstNameList[selectedIndex]} {lastNameList[selectedIndex]}";
                     string fileName = $"Pay_{fullName}_{DateTime.Now:yyyyMMddHHmmss}.csv";
-                    string filePath = Path.Combine(@"\\Mac\Home\Desktop\Testing Out\Part 3 application files\OO programming", fileName);
+                    string filePath = Path.Combine(@"\\Mac\Home\Desktop\Project\Part 3\Cl_OOProgramming_AE_Pro_Appx\Part 3 application files\", fileName);
 
                     var paySlipRecord = new
                     {
