@@ -133,10 +133,10 @@ namespace OO_programming
                             $"Hours worked: {hoursWorked}" + Environment.NewLine +
                             $"Hourly rate: {hourlyRate}" + Environment.NewLine +
                             $"Tax threshold: {taxThreshold}" + Environment.NewLine +
-                            $"Gross pay: {grossPay}" + Environment.NewLine +
-                            $"Tax: {tax}" + Environment.NewLine +
-                            $"Net pay: {netPay}" + Environment.NewLine +
-                            $"Superannuation: {superannuation}" + Environment.NewLine;
+                            $"Gross pay: {grossPay:C}" + Environment.NewLine +
+                            $"Tax: {tax:C}" + Environment.NewLine +
+                            $"Net pay: {netPay:C}" + Environment.NewLine +
+                            $"Superannuation: {superannuation:C}" + Environment.NewLine;
                     }
                      else
                     {
@@ -213,27 +213,29 @@ namespace OO_programming
                     {
                         TaxBrackets = taxBrackets
                     };
-
+                    int employeeId = idList[selectedIndex];
+                    double hourlyRate = hourlyRateList[selectedIndex];
+                    string fullName = $"{firstNameList[selectedIndex]} {lastNameList[selectedIndex]}";
                     double grossPay = calculator.CalculateGrossPay(hoursWorked, hourlyRateList[selectedIndex]);
                     double superannuation = calculator.CalculateSuperannuation(grossPay);
                     double tax = calculator.CalculateTax(grossPay);
                     double netPay = calculator.CalculateNetPay(grossPay, tax);
 
-                    string fullName = $"{firstNameList[selectedIndex]} {lastNameList[selectedIndex]}";
+                    
                     string fileName = $"Pay_{fullName}_{DateTime.Now:yyyyMMddHHmmss}.csv";
                     string filePath = Path.Combine(@"\\Mac\Home\Desktop\Project\Part 3\Cl_OOProgramming_AE_Pro_Appx\Part 3 application files\", fileName);
 
                     var paySlipRecord = new
                     {
-                        EmployeeId = idList[selectedIndex],
-                        FullName = fullName,
-                        HoursWorked = hoursWorked,
-                        HourlyRate = hourlyRateList[selectedIndex],
-                        TaxThreshold = taxThreshold,
-                        GrossPay = grossPay,
-                        Tax = tax,
-                        NetPay = netPay,
-                        Superannuation = superannuation
+                        EmployeeId = $"{employeeId}",
+                        FullName = $"{fullName}",
+                        HoursWorked = $"{hoursWorked}",
+                        HourlyRate = $"{hourlyRate}",
+                        TaxThreshold = $"{taxThreshold}",
+                        GrossPay = $"{grossPay:C}",
+                        Tax = $"{tax:C}",
+                        NetPay = $"{netPay:C}",
+                        Superannuation = $"{superannuation:C}"
                     };
 
                     try
